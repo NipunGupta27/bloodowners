@@ -1,0 +1,202 @@
+<html>
+
+    {% load static %}
+
+
+<head>
+    <title>Login</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'signupstyle.css' %}">
+
+<!------ Include the above in your HEAD tag ---------->
+</head>
+<body>
+
+ <div class="container">
+      <div class="row" style="padding-top: 80px; padding-left: 320px; padding-bottom: 50px">
+        <div class="col-xs-12 col-md-8 ">
+         <center> <nav>
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Login</a>
+              <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Signup</a>
+            </div>
+          </nav>
+          <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                  <form action="/signin" method="post" style="margin:20px; padding-right: 20px " >
+                      {% csrf_token %}
+                      <input type="text" id = "mail" name="mail" class="form-control" placeholder="Email" required>
+                      <input type="password" id = "password" name="password" class="form-control" placeholder="Password" required>
+                      <input type="submit" name="submit" class="form-control" value="Login">
+                  </form>
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <form action="/signup" method="post" style="margin: 20px;  padding-right: 20px ">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="name" class="col-12 col-md-3 col-form-label">Name</label>
+                        <div class="col-5 col-md-4 ">
+                            <input type="text" class="form-control" id="name"
+                                name="name" placeholder="First name" style="margin-left:-50px; margin-right: -50px" required>
+                        </div>
+                        <div class="col-7 col-md-4 ">
+                            <input type="text" class="form-control" id="lname"
+                                name="lname" placeholder="Last name" style="margin-left: -20px; margin-right: 80px" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="mail" class="col-12 col-md-3 col-form-label">Email</label>
+                        <div class="input-group col-md-8">
+                            <div class="input-group-prepend" style="margin-top: 10px">
+                                 <span class="input-group-text"><i class="fa fa-envelope-o fa-fw"></i></span>
+                            </div>
+                           <input type="email" id="mail" name="mail" class="form-control" placeholder="Email" style="margin-left: 0px" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="phone" class="col-12 col-md-3 col-form-label">Contact</label>
+                        <div class="input-group mb-3 col-md-8">
+                          <div class="input-group-prepend" style="margin-top: 10px" >
+                            <span class="input-group-text"><i class="fa fa-phone fa-fw"></i></span>
+                          </div>
+                          <input class="form-control" id="phone" name="phone" type="tel" placeholder="Phone number" style="margin-left:0px;">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="pass" class="col-12 col-md-3 col-form-label">Password</label>
+                        <div class="input-group mb-3 col-md-8">
+                          <div class="input-group-prepend" style="margin-top: 10px" >
+                            <span class="input-group-text"><i class="fa fa-lock fa-fw"></i></span>
+                          </div>
+                          <input class="form-control" id="pass" name="pass" type="password" placeholder="Password" style="margin-left:0px;">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="bg" class="col-12 col-md-3 col-form-label">Blood Group</label>
+                        <div class="input-group mb-3 col-md-8">
+                          <div class="input-group-prepend" style="margin-top: 10px" >
+                            <span class="input-group-text"><i class="fa fa-tint fa-fw"></i></span>
+                          </div>
+                          <input class="form-control" id="bg" name="bg" type="text" placeholder="Blood Group" style="margin-left:0px;">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <input id="lat" name = "lat" type="hidden" value="" />
+                        <input type="hidden" name = "lng" id="lng" value="" />
+
+                        <div class="custom-control custom-switch" style="margin-left: 20px">
+                            <input type="checkbox" class="custom-control-input" id="switch1" name="example">
+                            <label class="custom-control-label" onclick="getlocation()" for="switch1" >Current Location</label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="cont" class="col-12 col-md-3 col-form-label">Country</label>
+                        <div class="input-group mb-3 col-md-8">
+                          <div class="input-group-prepend" style="margin-top: 10px" >
+                            <span class="input-group-text"><i class="fa fa-flag fa-fw"></i></span>
+                          </div>
+                          <input class="form-control" id="cont" name="cont" type="text" placeholder="Country" style="margin-left:0px;">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="state" class="col-12 col-md-3 col-form-label">State</label>
+                        <select name="state" style="margin-left: 20px; padding-left: 20px">
+                                <option value="">Select State</option>
+                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                <option value="Daman and Diu">Daman and Diu</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Lakshadweep">Lakshadweep</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Orissa">Orissa</option>
+                                <option value="Pondicherry">Pondicherry</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttaranchal">Uttaranchal</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="West Bengal">West Bengal</option>
+                            </select>
+                    </div>
+                    <div class="form-group row">
+                        <label for="city" class="col-12 col-md-3 col-form-label">City</label>
+                        <div class="input-group mb-3 col-md-8">
+                          <div class="input-group-prepend" style="margin-top: 10px" >
+                            <span class="input-group-text"><i class="fa fa-home fa-fw"></i></span>
+                          </div>
+                          <input class="form-control" id="city" name="city" type="text" placeholder="City" style="margin-left:0px;">
+                        </div>
+                    </div>
+
+                    <input type="submit" name="submit" class="form-control button" value="Sign Up">
+                </form>
+
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                </div>
+
+                  <div id="output"></div>
+
+
+              </div>
+             </center>
+          </div>
+      </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script>
+        var x = document.getElementById('output');
+        function getlocation() {
+            if (navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(showposition);
+            }
+            else {
+                x.innerHTML="Browser not supporting"
+            }
+        }
+        function showposition(position) {
+            x.innerHTML= "Latitude = "+position.coords.latitude;
+            x.innerHTML+= "<br />";
+            x.innerHTML+= "Longitude = "+position.coords.longitude;
+            document.getElementById('lat').value = position.coords.latitude;
+            document.getElementById('lng').value = position.coords.longitude;
+        }
+
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

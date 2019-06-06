@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>welcome</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+    <header>
+        <center>
+            <h1>Welcome {{request.session.name}}</h1>
+        </center>
+            <a href="{% url "logout" %} " style="display: flex; justify-content: flex-end; margin-left: 1450px; margin-right: 30px"> LogOut</a>
+    </header>
+    <div class="col">
+        <div class="col-md-4">
+            <ol style="list-style: none;">
+                <li>Name: {{ request.session.name }} {{ request.session.lname }}</li>
+                <li>Email: {{ request.session.email }}</li>
+                <li>Contact: {{ request.session.phone }}</li>
+                <li>Blood: {{ request.session.blud }}</li>
+            </ol>
+        </div>
+
+        <button class="fa fa-map-marker" style="color:red" onclick="getlocation()"> Find Blood Donors near you...</button>
+        <div id="output"></div>
+
+        <div class="card col-md-4" style="margin-bottom:40px;">
+            <h3 class="card-header bg-warning text-white"><i class="fa fa-search" aria-hidden="true"></i> Find a Donor</h3>
+            <div class="card-body">
+                <div class="tab-content py-3 px-3 px-sm-0" >
+                    <div class="tab-pane fade show active" >
+                          <form action="/bloodsearch" method="post" style="margin:20px; padding-right: 20px " >
+                              {% csrf_token %}
+                              <div class="form-group row">
+                                <label for="state" class="col-12 col-md-3 col-form-label">State</label>
+                                <select name="stateslist" style="margin-left: 20px; padding-left: 20px; ">
+                                    <option value="">Select State</option>
+                                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Chandigarh">Chandigarh</option>
+                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                    <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                    <option value="Daman and Diu">Daman and Diu</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                    <option value="Jharkhand">Jharkhand</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Lakshadweep">Lakshadweep</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Manipur">Manipur</option>
+                                    <option value="Meghalaya">Meghalaya</option>
+                                    <option value="Mizoram">Mizoram</option>
+                                    <option value="Nagaland">Nagaland</option>
+                                    <option value="Orissa">Orissa</option>
+                                    <option value="Pondicherry">Pondicherry</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Sikkim">Sikkim</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Tripura">Tripura</option>
+                                    <option value="Uttaranchal">Uttaranchal</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                </select>
+                              </div>
+                              <div class="form-group row">
+                                <label for="state" class="col-12 col-md-4 col-form-label">Blood Group</label>
+                                <select name="bloodgroup" style="margin-left: 20px; padding-left: 20px; padding-right: 110px">
+                                    <option>Unknown</option>
+                                    <option>A+</option>
+                                    <option>A-</option>
+                                    <option>B+</option>
+                                    <option>B-</option>
+                                    <option>AB+</option>
+                                    <option>AB-</option>
+                                    <option>O+</option>
+                                    <option>O-</option>
+                                </select>
+                              </div>
+                              <input type="submit" name="submit" class="form-control" value="Search">
+                          </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% for obj in obc %}
+        {{ obj.name }}{{ obj.lname }}     -   {{ obj.phone }}<br/>
+
+    {% endfor %}
+    </div>
+
+
+
+<div ><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.0849734764192!2d77.31889761503477!3d28.567210982443562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce44f4d1b2a95%3A0x82fbbe415b8fedbe!2sDLF+Mall+of+India!5e0!3m2!1sen!2sin!4v1558955279416!5m2!1sen!2sin" width="1520" height="620" frameborder="0" style="border:0" allowfullscreen></iframe></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script>
+        var x = document.getElementById('output');
+        function getlocation() {
+            if (navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(showposition);
+            }
+            else {
+                x.innerHTML="Browser not supporting"
+            }
+        }
+        
+        function showposition(position) {
+            x.innerHTML= "Latitude = "+position.coords.latitude
+            x.innerHTML+= "<br />"
+            x.innerHTML+= "Longitude = "+position.coords.longitude
+            var locAPI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=28.6246124,77.3787033&key=AIzaSyB_A0joe12tj90f4W2Ae-U4Vw52fS1l30k;"
+
+            $.get({
+                url : locAPI,
+                success: function(data) {
+                    console.log(data);
+                    {#x.innerHTML = data.results[0].address_components[4].long_name+", ";#}
+                    {#x.innerHTML += data.results[0].address_components[5].long_name+", ";#}
+                    {#x.innerHTML += data.results[0].address_components[6].long_name;#}
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>
