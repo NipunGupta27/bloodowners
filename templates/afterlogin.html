@@ -10,24 +10,36 @@
 
 </head>
 <body>
-    <header>
-        <center>
-            <h1>Welcome {{request.session.name}}</h1>
-        </center>
-            <a href="{% url "logout" %} " style="display: flex; justify-content: flex-end; margin-left: 1450px; margin-right: 30px"> LogOut</a>
+    <header style="background-color:pink; opacity:0.7"><br><br>
+
+            <span style="text-align:center; opacity:1 "><h1>Welcome {{request.session.name}}</h1></span>
+
+            <a href="{% url "logout" %} " style="display: flex; justify-content: flex-end; margin-left: 1450px; margin-top:-40px; margin-right: 30px"> Logout</a>
+
+        <br><br>
     </header>
-    <div class="col">
-        <div class="col-md-4">
-            <ol style="list-style: none;">
-                <li>Name: {{ request.session.name }} {{ request.session.lname }}</li>
-                <li>Email: {{ request.session.email }}</li>
-                <li>Contact: {{ request.session.phone }}</li>
-                <li>Blood: {{ request.session.blud }}</li>
-            </ol>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"><div class="card">
+                    <h3 class="card-header bg-primary text-white">Facts at a Glance</h3>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-6">Name</dt>
+                            <dd class="col-6">{{ request.session.name }} {{ request.session.lname }}</dd>
+                            <dt class="col-6">Email</dt>
+                            <dd class="col-6">{{ request.session.email }}</dd>
+                            <dt class="col-6">Contact</dt>
+                            <dd class="col-6">{{ request.session.phone }}</dd>
+                            <dt class="col-6">Blood</dt>
+                            <dd class="col-6">{{ request.session.blud }}</dd>
+                        </dl>
+                    </div>
+                </div>
         </div>
 
         <button class="fa fa-map-marker" style="color:red" onclick="getlocation()"> Find Blood Donors near you...</button>
-        <div id="output"></div>
+        <div id="output""></div>
 
         <div class="card col-md-4" style="margin-bottom:40px;">
             <h3 class="card-header bg-warning text-white"><i class="fa fa-search" aria-hidden="true"></i> Find a Donor</h3>
@@ -99,45 +111,176 @@
         </div>
 
     {% for obj in obc %}
-        {{ obj.name }}{{ obj.lname }}     -   {{ obj.phone }}<br/>
+        {{ obj.name }} {{ obj.lname }}     -   {{ obj.phone }}<br/>
 
     {% endfor %}
     </div>
 
+    <h1 style="margin-left: 40px">My google map</h1>
+    <div id="map" style="height: 500px; width: 1200px; margin-left: 40px; margin-bottom: 60px"></div>
 
-
-<div ><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.0849734764192!2d77.31889761503477!3d28.567210982443562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce44f4d1b2a95%3A0x82fbbe415b8fedbe!2sDLF+Mall+of+India!5e0!3m2!1sen!2sin!4v1558955279416!5m2!1sen!2sin" width="1520" height="620" frameborder="0" style="border:0" allowfullscreen></iframe></div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script>
-        var x = document.getElementById('output');
-        function getlocation() {
-            if (navigator.geolocation){
-                navigator.geolocation.getCurrentPosition(showposition);
+        function initMap() {
+
+            //Map options
+            var options = {
+                zoom: 8,
+                center: {lat:28.6260636, lng:77.36715439999999},
+                mapTypeId: google.maps.MapTypeId.HYBRID,
+
+                rotateControl: true
             }
-            else {
-                x.innerHTML="Browser not supporting"
+            //new Map
+            var map = new google.maps.Map(document.getElementById('map'), options);
+
+
+            //Listen for click on map
+            google.maps.event.addListener(map, 'click', function (event) {
+                //addMarker
+                addMarker({coords:event.latLng});
+            });
+            var myTrip = [{lat:28.5, lng:79.3},{lat:27.6, lng:77.4},{lat:28.7, lng:76.3999}];
+            var myCity = new google.maps.Polygon({
+              center:{lat:28.6260636, lng:77.36715439999999},
+              radius:20000,
+              path:myTrip,
+              strokeColor:"#ff1f82",
+              strokeOpacity:0.8,
+              strokeWeight:2,
+              fillColor:"#ff2381",
+              fillOpacity:0.4
+            });
+            myCity.setMap(map);
+            //Add marker
+ /*           var marker = new google.maps.Marker({
+                position:{lat:28.6260636, lng:77.36715439999999},
+                map:map,
+                icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+            });
+
+            marker .addListener('click', function () {
+                infowindow.open(map, marker);
+            });
+
+            var infowindow = new google.maps.InfoWindow({
+                content: '<h1>Blood Camp</h1>'
+            })
+*/
+
+
+        var markers = [
+            {
+                coords: {lat:28, lng:77},
+                iconImage: 'https://developers.google.com/maps/documentation/' +
+                    'javascript/examples/full/images/beachflag.png',
+                content: '<h5>Blood camp</h5>'
+            },
+            {
+                coords: {lat:28.2, lng:77.99},
+                content: '<h5>Hoss-pital</h5>'
+            },
+            {
+                coords: {lat:28.4, lng:77.3}
+            }
+        ]
+
+        for(var i=0; i<markers.length; i++){
+            addMarker(markers[i]);
+        }
+
+        // Add marker Function
+        function addMarker(props) {
+            var marker = new google.maps.Marker({
+                position:props.coords,
+                map:map,
+                animation:google.maps.Animation.BOUNCE
+                //icon: props.iconImage
+            });
+
+            //check for custom icon
+            if(props.iconImage){
+                //set icon image
+                marker.setIcon(props.iconImage);
+            }
+            if(props.content){
+                var infowindow = new google.maps.InfoWindow({
+                content: props.content
+                });
+
+                marker .addListener('click', function () {
+                infowindow.open(map, marker);
+                map.setZoom(10);
+                map.setCenter(marker.getPosition());
+                });
             }
         }
-        
-        function showposition(position) {
-            x.innerHTML= "Latitude = "+position.coords.latitude
-            x.innerHTML+= "<br />"
-            x.innerHTML+= "Longitude = "+position.coords.longitude
-            var locAPI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=28.6246124,77.3787033&key=AIzaSyB_A0joe12tj90f4W2Ae-U4Vw52fS1l30k;"
+        if (navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(success,error);
 
-            $.get({
-                url : locAPI,
-                success: function(data) {
-                    console.log(data);
+        }
+        else {
+            alert("Browser not supporting");
+        }
+
+        function success(position) {
+            var mylat = position.coords.latitude;
+            var mylng = position.coords.longitude;
+            addMarker({
+                coords:{lat:mylat, lng:mylng},
+                content: '<h5>My location</h5>'
+            })
+        }
+        function error() {
+           alert('error in geolocation')
+        }
+
+         $.ajax({
+              method: "POST",
+              url: "search",
+         })
+         .done(function( msg ) {
+              alert( "Data Saved: " + msg );
+         });
+
+
+
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIPP8uY4KF_z5b0pTogZAwbanROQGmJLs&callback=initMap" type="text/javascript"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+{#    <script>#}
+{#        var x = document.getElementById('output');#}
+{#        function getlocation() {#}
+{#            if (navigator.geolocation){#}
+{#                navigator.geolocation.getCurrentPosition(showposition);#}
+{#            }#}
+{#            else {#}
+{#                x.innerHTML="Browser not supporting"#}
+{#            }#}
+{#        }#}
+{##}
+{#        function showposition(position) {#}
+{#            x.innerHTML= "Latitude = "+position.coords.latitude#}
+{#            x.innerHTML+= "<br />"#}
+{#            x.innerHTML+= "Longitude = "+position.coords.longitude#}
+            {#var locAPI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=28.6246124,77.3787033&key=AIzaSyB_A0joe12tj90f4W2Ae-U4Vw52fS1l30k;"#}
+{##}
+            {#$.get({#}
+            {#    url : locAPI,#}
+            {#    success: function(data) {#}
+            {#        console.log(data);#}
                     {#x.innerHTML = data.results[0].address_components[4].long_name+", ";#}
                     {#x.innerHTML += data.results[0].address_components[5].long_name+", ";#}
                     {#x.innerHTML += data.results[0].address_components[6].long_name;#}
-                }
-            });
-        }
+{#         //       }#}
+{#         //   });#}
+{#        }#}
+{##}
+{#    </script>       #}
 
-    </script>
+// Ajax shit
 
 </body>
 </html>
